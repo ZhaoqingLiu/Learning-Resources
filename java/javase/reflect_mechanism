@@ -50,4 +50,924 @@ Field   getDeclaredField( String name ) 获得在本类中直接声明（ privat
 Field[]   getDeclaredFields() 获得由本类直接声明的所有的属性组成的 Field 数组。
 Field   getField( String name ) 获得本类中或父类中声明的 public 修饰的指定名称的属性对应的Field对象。
 Field[]   getFields()  获得本类中或父类中声明的、由 public 修饰的所有的属性组成的 Field 数组。
+
 获得某个类中的属性测试案例一：
+package ecut.reflect.entity ;
+
+public class Student {
+    
+    private int id ;
+    private String name ;
+    
+    public Student () {
+        System.out.println( "无参构造执行" );
+    }
+    
+    protected Student ( int id ) {
+        System.out.println( "带有一个int类型参数的构造执行" );
+        this.id = id ;
+    }
+    
+    public Student( int id , String name ) {
+        System.out.println( "带有一个int类型参数和一个String类型参数的构造执行" );
+        this.id = id;
+        this.name = name;
+    }
+    
+    public Student( String name , int id ) throws RuntimeException , NullPointerException {
+        System.out.println( "带有一个String类型参数和一个int类型参数的构造执行" );
+        this.id = id;
+        this.name = name;
+    }
+
+    public int getId(){
+        return this.id ;
+    }
+
+    public void setId( int id ) {
+        this.id = id ;
+    }
+
+    public String getName(){
+        return this.name ;
+    }
+
+    public void setName( String name ) {
+        this.name = name ;
+    }
+
+    public void eat( String food ) {
+        System.out.println( this.name + " 吃 " + food );
+    }
+
+}
+
+package ecut.reflect;
+
+import java.lang.reflect.Field;
+
+import ecut.reflect.entity.Student;
+
+public class AccessFieldTest1 {
+
+    public static void main(String[] args) {
+        
+        Object o = new Student();
+        
+        Class<?> c = o.getClass() ;
+        
+        Field[] fields = c.getDeclaredFields();//获得由本类直接声明的所有的属性组成的 Field 数组
+        
+        for( int i = 0 , n = fields.length ; i < n ; i++ ) {
+            Field f = fields[ i ] ;
+            System.out.println( f );
+        }
+        
+    }
+
+}
+
+运行结果如下：
+无参构造执行
+private int ecut.reflect.entity.Student.id
+private java.lang.String ecut.reflect.entity.Student.name
+
+获得某个类中的属性测试案例二：
+package ecut.reflect;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
+import ecut.reflect.entity.Student;
+
+public class AccessFieldTest2 {
+
+    public static void main(String[] args) throws NoSuchFieldException, SecurityException {
+        
+        Object o = new Student();
+        
+        Class<?> c = o.getClass() ;
+        //获得在本类中直接声明指定名称的属性( Field )对象 private  、默认 、protected 、public
+        Field idField = c.getDeclaredField( "id" );
+        
+        int mod = idField.getModifiers();//以 int 形式返回该 属性 ( Field ) 的修饰符
+        
+        System.out.println( mod );
+        
+        String modifiers = Modifier.toString( mod );//返回描述指定修饰符中的访问修饰符标志的字符串
+        
+        System.out.println( modifiers );
+        
+    }
+
+}
+
+运行结果如下：
+无参构造执行
+2
+private
+
+5、获得某个类中的方法的非静态方法:
+
+Method      getDeclaredMethod( String name , Class<?>... parameterTypes )获得由本类直接声明的指定名称、指定参数列表的方法对应的 Method 对象。
+Method[]    getDeclaredMethods() 获得由本类直接声明的所有的方法对应的 Method 数组。
+Method      getMethod( String name  , Class<?>... parameterTypes )获得由本类或父类声明的由 public 修饰的、指定名称、指定参数列表的方法对应的 Method 对象。
+Method[]    getMethods() 获得由本类或父类声明的所有的 public 修饰方法对应的 Method 数组。
+获得某个类中的方法测试案例一：
+package ecut.reflect;
+
+import java.lang.reflect.Method;
+
+import ecut.reflect.entity.Student;
+
+public class AccessMethodTest1 {
+
+    public static void main(String[] args) {
+        
+        Object o = new Student();
+        
+        Class<?> c = o.getClass() ;
+        //获得由本类直接声明的所有的方法对应的 Method 数组
+        Method[] methods = c.getDeclaredMethods();
+        
+        for( int i = 0 , n = methods.length ; i < n ; i++ ) {
+            Method m = methods[ i ] ;
+            System.out.println( m );
+        }
+        
+    }
+
+}
+
+运行结果如下：
+无参构造执行
+public java.lang.String ecut.reflect.entity.Student.getName()
+public int ecut.reflect.entity.Student.getId()
+public void ecut.reflect.entity.Student.setName(java.lang.String)
+public void ecut.reflect.entity.Student.setId(int)
+public void ecut.reflect.entity.Student.eat(java.lang.String)
+
+获得某个类中的方法测试案例二：
+package ecut.reflect;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
+import ecut.reflect.entity.Student;
+
+public class AccessMethodTest2 {
+
+    public static void main(String[] args) throws NoSuchMethodException, SecurityException {
+        
+        Object o = new Student();
+        
+        Class<?> c = o.getClass() ;
+        //    获得由本类或父类声明的由 public 修饰的、指定名称、指定参数列表的方法对应的 Method 对象
+        Method eatMethod = c.getDeclaredMethod( "eat" , String.class );
+        
+        int mod = eatMethod.getModifiers();//以 int 形式返回该 方法 ( Method ) 的修饰符
+        
+        System.out.println( mod );//1(public)+16(final)
+        
+        String modifiers = Modifier.toString( mod );//返回描述指定修饰符中的访问修饰符标志的字符串
+        
+        System.out.println( modifiers );
+        
+    }
+
+}
+
+运行结果如下：
+无参构造执行
+17
+public final
+
+6、获得某个类中的构造方法:
+
+Constructor<T>    getDeclaredConstructor( Class<?>... parameterTypes )  获得由本类所声明的所有的构造方法中 参数 与指定的 参数列表 匹配的那个构造方法 ，这些构造方法的修饰符可以是 private 、默认 、protected 、public。
+Constructor<?>[]  getDeclaredConstructors() 获得由本类所声明的所有的构造方法组成的数组，构造方法的修饰符可以是private 、默认 、protected 、public。
+Constructor<T>    getConstructor( Class<?>... parameterTypes )从本类的 public 修饰的构造方法中，寻找与 parameterTypes 相匹配的那个构造方法。
+Constructor<?>[]   getConstructors()获得本类中所有的 public 修饰的构造方法组成的数组。
+获得某个类中的构造方法测试案例一：
+package ecut.reflect;
+
+import java.lang.reflect.Constructor;
+
+import ecut.reflect.entity.Student;
+
+
+public class AccessConstructorTest1 {
+
+    public static void main(String[] args) {
+        
+        Class<?> c = Student.class ;
+        //获得由本类所声明的所有的构造方法组成的数组,这些构造方法的修饰符可以是 private 、默认 、protected 、public
+        Constructor<?>[] cs =  c.getDeclaredConstructors();
+        
+        for( Constructor<?> con : cs ){
+            System.out.println( con );
+        }
+        
+        System.out.println( "~~~~~~~~~~~~~~~~~~~~~~~" );
+        //获得本类中所有的 public 修饰的构造方法组成的数组
+        Constructor<?>[] constructors =  c.getConstructors();
+        
+        for( Constructor<?> con : constructors ){
+            System.out.println( con );
+        }
+        
+        
+    }
+
+}
+
+运行结果如下：
+public ecut.reflect.entity.Student(java.lang.String,int) throws java.lang.RuntimeException,java.lang.NullPointerException
+public ecut.reflect.entity.Student(int,java.lang.String)
+protected ecut.reflect.entity.Student(int)
+public ecut.reflect.entity.Student()
+~~~~~~~~~~~~~~~~~~~~~~~
+public ecut.reflect.entity.Student(java.lang.String,int) throws java.lang.RuntimeException,java.lang.NullPointerException
+public ecut.reflect.entity.Student(int,java.lang.String)
+public ecut.reflect.entity.Student()
+
+获得某个类中的构造方法测试案例二：
+package ecut.reflect;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+
+import ecut.reflect.entity.Student;
+
+public class AccessConstructorTest2 {
+
+    public static void main(String[] args) throws Exception {
+        
+        Class<Student> c = Student.class ;
+        
+        //从本类的 public 修饰的构造方法中，寻找与 parameterTypes 相匹配的那个构造方法
+        Constructor<Student> con = c.getConstructor( int.class , String.class );
+        
+        System.out.println( con );
+        
+        int mod = con.getModifiers() ;
+        System.out.println( Modifier.toString( mod ) );
+        
+        System.out.println( "~~~~~~~~~~~~~~~~~~~~~~~~~~~~" );
+        
+        Object o = con.newInstance( 100 , "张三丰" );
+        
+        System.out.println( o );//通过反射获取到对象
+        
+    }
+
+}
+
+运行结果如下：
+public ecut.reflect.entity.Student(int,java.lang.String)
+public
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+带有一个int类型参数和一个String类型参数的构造执行
+ecut.reflect.entity.Student@15db9742
+
+java.lang.reflect
+1、Field 表示 类 或  接口 中的属性
+
+int    getModifiers()  以 int 形式返回该 属性 ( Field ) 的修饰符。
+Class<?>        getType() 返回当前属性的类型 ( 是一个 Class 类型的对象 )。
+String    getName()  返回此 Field 对象表示的属性 的名称。
+Object    get( Object o )  返回指定对象( o ) 中，该 Field 表示的属性的值。
+void    set( Object o , Object value ) 为指定对象 ( o ) 的 该属性赋值。
+2、Method 表示 类 或 接口 中的方法
+
+int    getModifiers()  以 int 形式返回该 方法 ( Method ) 的修饰符
+String    getName()  以 String形式返回此 Method对象表示的方法名称。
+Class<?>        getReturnType()  返回一个Class对象，该对象描述了此 Method对象所表示的方法的正式返回类型。
+Class<?>[]    getParameterTypes()  按照声明顺序返回 Class对象的数组，这些对象描述了此 Method对象所表示的方法的形参类型。
+Class<?>[]    getExceptionTypes()   返回 Class对象的数组，这些对象描述了声明将此 Method对象表示的底层方法抛出的异常类型。
+Object    invoke( Object target , Object... args )   对带有指定参数的指定对象调用由此 Method对象表示的底层方法
+3、Modifier表示 类 或  接口 中的修饰符
+
+ static String    toString( int mod )  返回描述指定修饰符中的访问修饰符标志的字符串。
+4、Constructor 表示 某个 类的 构造方法，构造方法特点: 与类名同名 、没有返回类型 、构造不能被继承。
+
+int    getModifiers()  以 int 形式返回该 构造方法 ( Constructor) 的修饰符
+Class<?>[]    getParameterTypes() 按照声明顺序返回一组 Class对象，这些对象表示此 Constructor对象所表示构造方法的形参类型。
+Class<?>[]    getExceptionTypes()  返回 Class对象的数组，这些对象描述了声明将此 Constructor对象表示的构造方法抛出的异常类型
+5、Array : 不表示数组，它提供了操作数组的方法
+
+static int    getLength( Object array ) 获得 array 对应的数组中元素个数。
+static void    set( Object array, int index , Object value ) 相当于 array[ index ] = value ;
+static Object    get( Object array , int index ) 相当于 Object o = array[ index ] ;
+static Object    newInstance( Class<?> componentType , int length ) 比如 Array.newInstance( int.class , 10 ) 相当于 new int[ 10 ] ;
+static Object    newInstance( Class<?> componentType , int... dimensions )比如 Array.newInstance( char.class , 4 , 5 ) 相当于 new char[ 4 ] [ 5 ] ;
+Array测试案例一：
+package ecut.reflect;
+
+import java.lang.reflect.Array;
+import java.util.Random;
+
+public class AccessArrayTest1 {
+
+    public static void main(String[] args) {
+        
+        Random rand = new Random();
+        
+        Object o = new int[ 10 ] ;
+        
+        
+        // 获得 o 的运行时类型 ( o 所引用的对象的类型 )
+        Class<?> c = o.getClass(); // java.lang.Object 类的 getClass 方法被所有类所继承
+        
+        if( c.isArray() ) {
+            
+            // 获得数组长度
+            int length = Array.getLength( o ) ; // o.length ;
+            System.out.println( "数组元素个数: " + length );
+            
+            // 用反射方式遍历数组
+            for( int i = 0 ; i < length ; i++ ){
+                Object v = Array.get( o ,  i ) ;  // o[ i ] ;
+                System.out.print( v + "\t" );
+            }
+            System.out.println();
+            
+            // 用反射方式为数组中的每个元素赋值
+            for( int i = 0 ; i < length ; i++ ){
+                int v = rand.nextInt( 100 ) ; // 产生 [ 0 , 100 ) 之间的整数
+                Array.set( o ,  i ,  v ); // o [ i ] = v ;
+            }
+            
+            System.out.println( "~~~~~~~~~~~~~" );
+            
+            for( int i = 0 ; i < length ; i++ ){
+                Object v = Array.get( o ,  i ) ;  // o[ i ] ;
+                System.out.print( v + "\t" );
+            }
+            System.out.println();
+            
+        }
+        
+
+    }
+
+}
+
+运行结果如下：
+
+数组元素个数: 10
+0    0    0    0    0    0    0    0    0    0    
+~~~~~~~~~~~~~
+38    42    84    1    38    20    81    83    52    49    
+
+Array测试案例二：
+package ecut.reflect;
+
+import java.lang.reflect.Array;
+import java.util.Random;
+
+public class AccessArrayTest2 {
+
+    public static void main(String[] args) {
+        
+        Random rand = new Random();
+        
+        Object o = Array.newInstance( int.class ,  10 ); // Object o = new int[ 10 ] ;
+        
+        Class<?> c = o.getClass() ;
+        
+        if( c.isArray() ){
+            int n = Array.getLength( o );
+            System.out.println( n );
+            
+            // 用反射方式为数组中的每个元素赋值
+            for (int i = 0; i < n; i++) {
+                int v = rand.nextInt(100); // 产生 [ 0 , 100 ) 之间的整数
+                Array.set(o, i, v); // o [ i ] = v ;
+            }
+
+            // 用反射方式遍历数组
+            for (int i = 0; i < n; i++) {
+                Object v = Array.get(o, i); // o[ i ] ;
+                System.out.print(v + "\t");
+            }
+            System.out.println();
+
+        } else {
+            System.out.println( "不是数组" );
+        }
+        
+        
+
+    }
+
+}
+
+运行结果如下：
+
+10
+54    23    75    30    6    83    92    92    76    53    
+
+Array测试案例三：
+package ecut.reflect;
+
+import java.lang.reflect.Array;
+
+public class AccessArrayTest3 {
+
+    public static void main(String[] args) {
+        
+        Object o = Array.newInstance( int.class ,  4 , 5 ) ; // new char[ 4 ] [ 5 ] ;
+        
+        Class<?> c = o.getClass(); 
+        
+        if( c.isArray() ){
+            
+            int x = Array.getLength( o ) ; // 获得最外维的数组的长度
+            System.out.println( "外部数组长度: " + x );
+            
+            for( int i = 0 ; i < x ; i++ ){
+                // 获得数组内部的元素 ( 可能还是数组 )
+                Object e = Array.get( o ,  i );
+                Class<?> cc = e.getClass();
+                if( cc.isArray() ){
+                    int y = Array.getLength( e ) ; // 获得第二维的数组的长度
+                    for( int j = 0 ; j < y ; j++ ){
+                        // 获得第二维数组中的元素
+                        Object v = Array.get( e ,  j ) ;
+                        System.out.print( v + "\t" );
+                    }
+                    System.out.println();
+                } else {
+                    System.out.println( e );
+                }
+            }
+            
+        }
+        
+        
+
+    }
+
+}
+
+运行结果如下：
+
+外部数组长度: 4
+0    0    0    0    0    
+0    0    0    0    0    
+0    0    0    0    0    
+0    0    0    0    0    
+
+6、Type
+
+Type 是 Java 编程语言中所有类型的公共高级接口。它们包括原始类型、参数化类型、数组类型、类型变量和基本类型。
+
+7、AccessibleObject 是 Field 、Method 、Constructor 类的父类
+
+boolean    isAccessible()   获取此对象的 accessible 标志的值 ，判断指定对象是否可以被访问，比如 private 修饰的属性就不能直接访问。
+void    setAccessible( boolean flag )将此对象的 accessible 标志设置为指示的布尔值，让一个本来不能访问的对象可以被访问，可以写作 setAccessible( true )。
+操作属性:
+
+Object    get( Object o )  返回指定对象( o ) 中，该 Field 表示的属性的值。
+void    set( Object o , Object value ) 为指定对象 ( o ) 的 该属性赋值。
+
+操作属性测试案例：
+package ecut.reflect;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
+import ecut.reflect.entity.Student;
+
+public class AccessFieldTest3 {
+
+    public static void main(String[] args) {
+
+        Object o = new Student();
+
+        Class<?> c = o.getClass();
+
+        try {
+            // 获得由本类直接声明的所有的属性组成的 Field 数组
+            Field idField = c.getDeclaredField("id");
+            System.out.println(idField);
+
+            int mod = idField.getModifiers(); // 获得修饰符
+            String modifier = Modifier.toString(mod);
+            System.out.println("modifier : " + modifier);
+            // 返回当前属性的类型 ( 是一个 Class 类型的对象 )
+            Class<?> type = idField.getType();
+            System.out.println("type : " + type.getName());
+            // 返回此 Field 对象表示的属性 的名称
+            String name = idField.getName();
+            System.out.println("name : " + name);
+
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+}
+
+运行结果：
+
+无参构造执行
+private int ecut.reflect.entity.Student.id
+modifier : private
+type : int
+name : id
+
+操作属性测试案例：
+package ecut.reflect;
+
+import java.lang.reflect.Field;
+
+import ecut.reflect.entity.Student;
+
+public class AccessFieldTest4 {
+
+    public static void main(String[] args) {
+        
+        Object o = new Student( 100 , "张三丰" );
+        
+        Class<?> c = o.getClass();
+        
+        try {
+            
+            Field idField = c.getDeclaredField( "id" );
+            //判断指定对象是否可以被访问，比如 private 修饰的属性就不能直接访问
+            if( idField.isAccessible() == false) {
+                //让一个本来不能访问的对象可以被访问，可以写作 setAccessible( true )
+                idField.setAccessible( true );
+            }
+            
+            // 从 o 对象中 获取 idField 所表示的属性的值
+            Object v = idField.get( o ) ;  // o.id ;
+            System.out.println( v );
+            
+            int value = 1001 ;
+            //为指定对象 ( o ) 的 该属性赋值
+            // 为 o 对象中的 idField 所表示的属性 赋予 value 所表示的值
+            idField.set( o , value );
+            //返回指定对象( o ) 中，该 Field 表示的属性的值
+            v = idField.get( o ) ;  // o.id ;
+            System.out.println( v );
+            
+        } catch (NoSuchFieldException e) {
+            System.out.println( "属性不存在" );
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            System.out.println( "不准访问" );
+            e.printStackTrace();
+        }
+        
+
+    }
+
+}
+
+运行结果：
+
+带有一个int类型参数和一个String类型参数的构造执行
+100
+1001
+执行构造方法:
+
+Constructor<?>    con = getConstructor( Class<?>... parameterTypes ) ;
+Object o = con.newInstance( Object... initargs ) ;或: Class<?> c = Student.class ;
+Object o = c.newInstance();
+
+执行构造测试案例：
+package ecut.reflect;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+
+import ecut.reflect.entity.Student;
+
+public class AccessConstructorTest3 {
+
+    public static void main(String[] args) throws Exception {
+        
+        Class<?> c = Student.class ;
+        //从本类的 public 修饰的构造方法中，寻找与 parameterTypes 相匹配的那个构造方法
+        Constructor<?> con = c.getConstructor( String.class , int.class );
+        
+        System.out.println( con );
+        //以 int 形式返回该 构造方法 ( Constructor ) 的修饰符
+        int mod = con.getModifiers();
+        String modifier = Modifier.toString( mod ) ;
+        System.out.println( "modifier : " + modifier );
+        // 获得构造方法的名称，返回带会包名.类名的形式
+        String name = con.getName();
+        System.out.println( "name : " + name );
+        
+        // 获得参数类型列表
+        Class<?>[] paramTypes = con.getParameterTypes();
+        System.out.print( "parameter types : " );
+        for( int i = 0 , n = paramTypes.length ; i < n ; i++ ){
+            Class<?> t = paramTypes[ i ];
+            System.out.print( t.getName() + "\t" );
+        }
+        System.out.println();
+        
+        // 获取所声明抛出的异常类型
+        Class<?>[]  exceptionTypes = con.getExceptionTypes();
+        System.out.print( "exception types : " );
+        for( int i = 0 , n = exceptionTypes.length ; i < n ; i++ ){
+            Class<?> t = exceptionTypes[ i ];
+            System.out.print( t.getName() + "\t" );
+        }
+        System.out.println();
+        
+    }
+
+}
+
+运行结果如下：
+
+public ecut.reflect.entity.Student(java.lang.String,int) throws java.lang.RuntimeException,java.lang.NullPointerException
+modifier : public
+name : ecut.reflect.entity.Student
+parameter types : java.lang.String    int    
+exception types : java.lang.RuntimeException    java.lang.NullPointerException    
+
+执行构造测试案例：
+package ecut.reflect;
+
+import java.lang.reflect.Constructor;
+
+import ecut.reflect.entity.Student;
+
+public class AccessConstructorTest4 {
+
+    public static void main(String[] args) throws Exception {
+        
+        Class<?> c = Student.class ;
+        
+        Constructor<?> con = null ;
+        Object o = null ;
+        
+        con = c.getConstructor(); // 获取 public 修饰的无参构造
+        
+        o = con.newInstance() ; // 调用无参构造创建对象
+        
+        System.out.println( o );
+        
+        // 根据参数类型列表寻找相应的由 public 修饰 构造方法
+        con = c.getConstructor(  int.class  , String.class );
+        
+        o = con.newInstance( 9527 , "华安" );
+        
+        System.out.println( o );
+        //获得由本类所声明的所有的构造方法组成的数组,这些构造方法的修饰符可以是 private 、默认 、protected 、public
+        con = c.getDeclaredConstructor( int.class ) ;
+        //让一个本来不能访问的对象可以被访问，可以写作 setAccessible( true )
+        con.setAccessible( true );
+        
+        o = con.newInstance( 250 );
+        System.out.println( o );
+        
+    }
+
+}
+
+运行结果如下：
+
+无参构造执行
+ecut.reflect.entity.Student@15db9742
+带有一个int类型参数和一个String类型参数的构造执行
+ecut.reflect.entity.Student@6d06d69c
+带有一个int类型参数的构造执行
+ecut.reflect.entity.Student@7852e922
+
+执行构造测试案例：
+package ecut.reflect;
+
+import ecut.reflect.entity.Student;
+
+/**
+ * 本类中并不会获取 Constructor 类型的对象，但是会通过 构造方法来创建对象
+ */
+public class AccessConstructorTest5 {
+
+    public static void main(String[] args) throws Exception {
+        
+        Class<?> c = Student.class ;
+
+        //依赖于 相应类型中的 public修饰的 无参构造方法 (被绝大多数框架所采用 )等同于c.getConstructor().newInstance();
+        Object o = c.newInstance(); 
+
+        System.out.println( o );
+        
+    }
+
+}
+
+运行结果如下：
+
+无参构造执行
+ecut.reflect.entity.Student@15db9742
+执行方法:
+
+Class<?> c = Class.forName( "edu.ecut.entity.Student" );
+Constructor<?> con = c.getConstructor( int.class , String.class );
+Object s = con.newInstance( 100 , "张翠山" );
+ 先找到指定的方法:Method eatMethod = c.getDeclaredMethod( "eat" , String.class ) ;
+让方法执行起来:Object result = eatMethod.invoke( s , "藜蒿炒腊肉" ); // s.eat( "藜蒿炒腊肉" );
+
+执行方法测试案例：
+package ecut.reflect;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
+
+public class AccessMethodTest3 {
+
+    public static void main(String[] args) throws Exception {
+        
+        Class<?> c = HashMap.class ;
+        //获得由本类直接声明的指定名称、指定参数列表的方法对应的 Method 对象
+        Method m = c.getDeclaredMethod( "put" , Object.class , Object.class );
+        
+        System.out.println( m );
+        //以 int 形式返回该 方法 ( Method ) 的修饰符
+        int mod = m.getModifiers();
+        String modifier = Modifier.toString( mod ) ;
+        System.out.println( "modifier : " + modifier );
+        //返回当前方法的返回类型 ( 是一个 Class 类型的对象 )
+        Class<?> returnType = m.getReturnType();
+        System.out.println( "return type : " + returnType.getName() );
+        //返回此 方法 的名称
+        String name = m.getName();
+        System.out.println( "name : " + name );
+        
+        
+        // 获得参数类型列表
+        Class<?>[] paramTypes = m.getParameterTypes();
+        System.out.print( "parameter types : " );
+        for( int i = 0 , n = paramTypes.length ; i < n ; i++ ){
+            Class<?> t = paramTypes[ i ];
+            System.out.print( t.getName() + "\t" );
+        }
+        System.out.println();
+        
+        
+        // 获取所声明抛出的异常类型
+        Class<?>[]  exceptionTypes = m.getExceptionTypes();
+        System.out.print( "exception types : " );
+        for( int i = 0 , n = exceptionTypes.length ; i < n ; i++ ){
+            Class<?> t = exceptionTypes[ i ];
+            System.out.print( t.getName() + "\t" );
+        }
+        System.out.println();
+    }
+
+}
+
+运行结果如下：
+
+public java.lang.Object java.util.HashMap.put(java.lang.Object,java.lang.Object)
+modifier : public
+return type : java.lang.Object
+name : put
+parameter types : java.lang.Object    java.lang.Object    
+exception types : 
+
+InvokeMethod测试案例一：
+package ecut.reflect;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+public class InvokeMethodTest1 {
+
+    public static void main(String[] args) throws Exception {
+        
+        
+        /*加载指定的类 ,3种方式获取Class
+         （1）某个对象实例的getClass()方法，如new Student().getClass()
+         （2）某个类名.class属性，Student.class
+         （3）通过Class.forName("完整的类名")获取*/
+        Class<?> c = Class.forName( "ecut.reflect.entity.Student" );
+        
+        Constructor<?> con = c.getConstructor( int.class , String.class );
+        
+        //Student s = new Student( 100 , "张翠山" );
+        Object s = con.newInstance( 100 , "张翠山" );
+        //获得由本类或父类声明的由 public 修饰的、指定名称、指定参数列表的方法对应的 Method 对象
+        Method eatMethod = c.getDeclaredMethod( "eat" , String.class ) ;
+        
+        try {
+            // s.eat( "藜蒿炒腊肉" ); // 被调用的方法是 eat ; 传入的参数是字符串 ; 调用 s 所引用的对象的 eat 方法
+            eatMethod.invoke( s , "藜蒿炒腊肉" );
+        } catch (IllegalAccessException e) {
+            System.out.println( e.getMessage() );
+            //e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            System.out.println( e.getMessage() );
+            //e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        
+    }
+
+}
+
+运行结果如下：
+
+带有一个int类型参数和一个String类型参数的构造执行
+张翠山 吃 藜蒿炒腊肉
+如果方法正常完成，则将该方法返回的值返回给调用者；如果该值为基本类型，则首先适当地将其包装在对象中。但是，如果该值的类型为一组基本类型，则数组元素不 被包装在对象中；换句话说，将返回基本类型的数组。如果底层方法返回类型为 void，则该调用返回 null。
+
+InvokeMethod测试案例二：
+package ecut.reflect;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+
+public class InvokeMethodTest2 {
+
+    public static void main(String[] args) throws Exception {
+        
+        
+        /*加载指定的类 ,3种方式获取Class
+         （1）某个对象实例的getClass()方法，如new Student().getClass()
+         （2）某个类名.class属性，Student.class
+         （3）通过Class.forName("完整的类名")获取*/        
+        Class<?> c = Class.forName( "ecut.reflect.entity.Student" );
+        
+        Constructor<?> con = c.getConstructor( int.class , String.class );
+        
+        //Student s = new Student( 100 , "张翠山" );
+        Object s = con.newInstance( 100 , "张翠山" );
+        //获得由本类或父类声明的由 public 修饰的、指定名称、指定参数列表的方法对应的 Method 对象
+        Method eatMethod = c.getDeclaredMethod( "eat" , String.class ) ;
+        
+        // s.eat( "藜蒿炒腊肉" ); // 被调用的方法是 eat ; 传入的参数是字符串 ; 调用 s 所引用的对象的 eat 方法
+        Object result = eatMethod.invoke( s , "藜蒿炒腊肉" );
+        System.out.println( "result : " + result );
+        
+    }
+
+}
+
+运行结果如下：
+
+带有一个int类型参数和一个String类型参数的构造执行
+张翠山 吃 藜蒿炒腊肉
+result : null
+
+InvokeMethod测试案例三：
+package ecut.reflect;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+
+public class InvokeMethodTest3 {
+
+    public static void main(String[] args) throws Exception {
+        
+        // 加载指定的类
+        Class<?> c = Class.forName( "ecut.reflect.entity.Student" );
+        
+        Constructor<?> con = c.getConstructor( int.class , String.class );
+        
+        //Student s = new Student( 100 , "张翠山" );
+        Object s = con.newInstance( 100 , "张翠山" );
+        
+        Method getIdMethod = c.getDeclaredMethod( "getId" ) ;
+        
+        // int id = s.getId() ; // 被调用的方法是 getId ; 没有传入的参数 ; 调用 s 所引用的对象的 getId
+        Object result = getIdMethod.invoke( s );
+        System.out.println( "result : " + result );
+        
+        Method getNameMethod = c.getDeclaredMethod( "getName" ) ;
+        
+        // String name = s.getName() ; // 被调用的方法是 getName ; 没有传入的参数 ; 调用 s 所引用的对象的 getName
+        result = getNameMethod.invoke( s );
+        System.out.println( "result : " + result );
+        
+    }
+
+}
+
+运行结果如下：
+
+带有一个int类型参数和一个String类型参数的构造执行
+result : 100
+result : 张翠山
+
+References
+http://www.cnblogs.com/AmyZheng/p/8687685.html
