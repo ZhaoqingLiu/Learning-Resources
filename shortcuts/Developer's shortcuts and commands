@@ -1,0 +1,82 @@
+idea快捷键
+
+代码上移： command+shift+向上箭头
+查找类：shift+ shift 查找类
+格式化代码：Ctrl+alt+l
+导入包看报错的解决方法：alt+enter
+批量修改变量名称：shift + F6批量修改变量名称
+输出的快捷键： sout
+大小写切换：ctrl+ shift+ u
+弹出计算表达式的窗口：Alt + F8
+自动补全变量名：ctrl+alt+v
+导包：ctrl+alt+o
+控制台全屏：ctrl+shift+f12
+注释：ctrl +shift + /
+
+Git命令
+
+git init：初始化本地git仓库
+git remote set-url origin url：设置远程分支的地址
+git branch ：查看本地有哪些分支
+git checkout  xxx：切换分支
+git merge xxx：将分支合并到当前分支上
+git commit -m "xxxxxxxx"：提交暂存区更新到仓库区
+git push：将代码提交到远程服务器
+git pull：取回远程服务器的更新，并于本地分支合并
+git branch –D  xxx： 删除分支
+git config --global user.name “Amy" ：修改名称
+git remote add origin url：添加远程仓库
+Maven命令
+
+mvn compile：Java源码编译成class
+mvn test：将test目录中的Java源码编译成class
+mvn clean：删除class文件
+mvn package：打包（jar等）到本项目的target下
+mvn package –DskipTests：打包跳过测试
+mvn install：把target下打的包（jar等）安装到本地仓库，可以供其他项目使用。
+mvn deploy：将打包的文件发布到远程参考,提供其他人员进行下载依赖。
+SBT命令
+
+clean：删除所有生成的文件（在目标目录中）。
+compile：编译
+test：编译并允许所有测试
+package：创建一个jar文件
+reload：重新加载构建项
+Gandle命令
+
+./gradlew clean build：gradlew是包装器，自动下载包装器里定义好的gradle 版本，保证编译环境统一，gradle 是用本地的gradle版本。./运行包装文件
+./gradlew clean build -x test --refresh-dependencies 刷新依赖
+gradle build：编译整个项目，它会执行代码编译、代码检测和单元测试等
+gradle assemble：编译并打包你的代码, 但是并不运行代码检测和单元测试
+gradle clean：删除 build 生成的目录和所有生成的文件
+gradle check：编译并测试你的代码。其它的插件会加入更多的检查步骤，如使用 checkstyle、pmd、findbugs
+Linux命令
+
+sh filename：启动shell脚本
+./ filename ：启动shell脚本
+ll filename：查看文件权限
+chmod：修改权限
+rz：上传
+sz：下载
+unzip filename.zip -d 目录：解压zip文件到指定目录
+sz 文件夹名/*.* ：下载所有文件
+cp -R 源目录/* 目地目录：拷贝所有文件到目标目录
+rm -rf * ：删除文件夹下的所有文件，而不删除文件夹本身
+ps -e：显示所有程序。
+ ps f：用ASCII字符显示树状结构，表达程序间的相互关系
+kill －9 进程号：杀死进程
+MySQL命令
+
+desc tabl_name：显示表结构
+Mac快捷键
+
+截屏：command+shift+3、command+shift+4
+打开一个新窗口：command+t
+brew命令
+
+安装软件：brew insatll xxx ，配置文件在/usr/local/etc中，安装文件在/usr/local/Cellar中，二进制可执行程序的软连接在/usr/local/bin中
+查看正在 brew 服务列表：brew services list
+卸载软件包：brew uninstall <package name>
+查找软件包：brew search <package name>
+更新brew： brew update
+停止服务：brew services stop 服务名称
