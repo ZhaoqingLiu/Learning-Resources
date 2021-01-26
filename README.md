@@ -1,2 +1,4 @@
 # learning_notes
-Gather all IT learning notes.
+
+
+A collection of learning resources about software engineering.
