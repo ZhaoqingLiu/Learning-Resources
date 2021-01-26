@@ -1,4 +1,4 @@
-# learning_notes
+# Learning-Resources
 
 
-A collection of learning resources about software engineering.
+A collection of learning resources.
